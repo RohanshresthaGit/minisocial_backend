@@ -46,6 +46,7 @@ class LoginView(APIView):
 
         if serializer.is_valid():
             user = serializer.validated_data
+            refresh = RefreshToken.for_user(user)
             return Response({
                 "isSuccess": True,
                 "message": "Login successful.",
@@ -54,8 +55,8 @@ class LoginView(APIView):
                     "email": user.email,
                     "full_name": user.full_name,
                     "username": user.username,
-                    "refresh": str(RefreshToken.for_user(user)),
-                    "access": str(RefreshToken.for_user(user).access_token)
+                    "refresh": str(refresh),
+                    "access": str(refresh.access_token)
             }}, status = status.HTTP_200_OK)
         
         return Response(serializer.errors, status = status.HTTP_400_BAD_REQUEST)
